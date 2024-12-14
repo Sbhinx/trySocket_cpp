@@ -125,8 +125,6 @@ public:
 			return "";
 		}
 
-		
-
 		//编写message(用json对象写)
 
 		nlohmann::json message;
@@ -138,10 +136,35 @@ public:
 		//发送并接受响应
 		std::string response = sendRequest(message_str);
 		
-		std::cout << u8"读取操作响应：" << response << std::endl;
+		std::cout << u8"写入操作响应：" << response << std::endl;
 
 		return response;
 	}
+
+	std::string read(int lamp_id) {
+		/*
+		* 从客户端读取数据(按id)
+		* 
+		* @param lamp_id:红绿灯id
+		* @return response: 读取操作响应
+		* 
+		*/
+
+		//编写message
+		nlohmann::json message;
+		message["action"] = "read";
+		message["lampID"] = lamp_id;
+
+		std::string message_str = message.dump();
+		//发送并接受响应
+		std::string response = sendRequest(message_str);
+
+		std::cout << u8"读取操作响应：" << response << std::endl;
+
+		return response;
+
+	}
+
 };
 
 int main() {
@@ -161,6 +184,9 @@ int main() {
 	TrafficLightInfoClient client("192.168.8.25", 8848);
 
 	client.write(write_data);
+
+	client.read(3);
+	client.read(2);
 
 	return 0;
 
