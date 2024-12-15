@@ -169,6 +169,7 @@ public:
 
 int main() {
 
+
 	system("CHCP 65001");
 	nlohmann::json write_data = {
 		{"neckName", u8"党校路口"},
@@ -181,12 +182,36 @@ int main() {
 	};
 
 
-	TrafficLightInfoClient client("192.168.8.25", 8848);
+	TrafficLightInfoClient client("198.18.1.48", 64378);
 
-	client.write(write_data);
+	//client.write(write_data);
 
-	client.read(3);
-	client.read(2);
+	LARGE_INTEGER frequency;  // 计时器频率
+	LARGE_INTEGER start, end; // 计时器开始和结束值
+
+	if (!QueryPerformanceFrequency(&frequency)) {
+		std::cerr << "[ERROR] 不支持高分辨率性能计时器！" << std::endl;
+		return 1;
+	}
+
+
+	
+
+	// 开始计时
+	QueryPerformanceCounter(&start);
+
+	client.read(6);
+
+	// 结束计时
+	QueryPerformanceCounter(&end);
+
+	// 计算执行时间（以秒为单位）
+	double elapsedTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+	std::cout << u8"TCP往返时间(RTT)): " << elapsedTime*1000 << u8"ms" << std::endl;
+
+	
+	
+	
 
 	return 0;
 
